@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" method="upgrade">
+	<name>COM_INSTRUCTOR_BILLING</name>
+	<author>Solution CHAM</author>
+	<creationDate>2026-06-22</creationDate>
+	<copyright>(C) 2026 Solution CHAM. Tous droits réservés.</copyright>
+	<license>GPL-2.0-or-later</license>
+	<authorEmail>admin@example.com</authorEmail>
+	<authorUrl>https://ecole-de-conduite.ca/</authorUrl>
+	<version>0.1.0</version>
+	<description>COM_INSTRUCTOR_BILLING_XML_DESCRIPTION</description>
+	<namespace path="src">Cham\Component\InstructorBilling</namespace>
+	<scriptfile>script.php</scriptfile>
+
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+
+	<files folder="site">
+		<folder>language</folder>
+		<folder>src</folder>
+		<folder>tmpl</folder>
+	</files>
+
+	<administration>
+		<menu img="class:clock">COM_INSTRUCTOR_BILLING</menu>
+		<submenu>
+			<menu link="option=com_instructor_billing">COM_INSTRUCTOR_BILLING_SUBMENU_DASHBOARD</menu>
+			<menu link="option=com_instructor_billing&amp;view=instructors">COM_INSTRUCTOR_BILLING_SUBMENU_INSTRUCTORS</menu>
+			<menu link="option=com_instructor_billing&amp;view=sessions">COM_INSTRUCTOR_BILLING_SUBMENU_SESSIONS</menu>
+			<menu link="option=com_instructor_billing&amp;view=invoices">COM_INSTRUCTOR_BILLING_SUBMENU_INVOICES</menu>
+			<menu link="option=com_instructor_billing&amp;view=settings">COM_INSTRUCTOR_BILLING_SUBMENU_SETTINGS</menu>
+		</submenu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<folder>language</folder>
+			<folder>services</folder>
+			<folder>sql</folder>
+			<folder>src</folder>
+			<folder>tmpl</folder>
+		</files>
+	</administration>
+
+	<media destination="com_instructor_billing" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+</extension>

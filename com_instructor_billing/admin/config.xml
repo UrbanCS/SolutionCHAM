@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL">
+		<field
+			name="rules"
+			type="rules"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			filter="rules"
+			validate="rules"
+			component="com_instructor_billing"
+			section="component"
+		/>
+	</fieldset>
+	<fieldset name="billing" label="COM_INSTRUCTOR_BILLING_CONFIG_BILLING_LABEL">
+		<field name="invoice_prefix" type="text" default="CHAM" label="COM_INSTRUCTOR_BILLING_CONFIG_INVOICE_PREFIX" />
+		<field name="tax_enabled" type="radio" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_TAX_ENABLED" class="switcher">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="tax_rate" type="number" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_TAX_RATE" step="0.001" min="0" />
+		<field name="default_hourly_rate" type="number" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_DEFAULT_RATE" step="0.01" min="0" />
+	</fieldset>
+	<fieldset name="sage" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_LABEL">
+		<field name="sage_enabled" type="radio" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_ENABLED" class="switcher">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="sage_client_id" type="text" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_CLIENT_ID" />
+		<field name="sage_client_secret" type="password" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_CLIENT_SECRET" />
+		<field name="sage_redirect_uri" type="url" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_REDIRECT_URI" />
+	</fieldset>
+</config>

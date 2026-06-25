@@ -1,0 +1,162 @@
+.ib-admin {
+	color: #20242a;
+}
+
+.ib-band,
+.ib-card,
+.ib-admin section {
+	background: #ffffff;
+	border: 1px solid #d8dde5;
+	border-radius: 8px;
+	margin-bottom: 16px;
+	padding: 16px;
+}
+
+.ib-band {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	background: #f7fafc;
+}
+
+.ib-band h2,
+.ib-card h3,
+.ib-admin section h3 {
+	margin-top: 0;
+}
+
+.ib-grid {
+	display: grid;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+
+.ib-grid-2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ib-grid-3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ib-columns {
+	display: grid;
+	grid-template-columns: minmax(0, 1.3fr) minmax(0, .9fr);
+	gap: 16px;
+}
+
+.ib-number {
+	font-size: 1.6rem;
+	font-weight: 700;
+	margin: 0;
+}
+
+.ib-form label,
+.ib-filters label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.ib-form input,
+.ib-form textarea,
+.ib-form select,
+.ib-filters input,
+.ib-filters select,
+.ib-actions select {
+	width: 100%;
+	max-width: 100%;
+	min-height: 38px;
+	border: 1px solid #b8c2cc;
+	border-radius: 6px;
+	box-sizing: border-box;
+	padding: 7px 9px;
+}
+
+.ib-form-grid,
+.ib-filters {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 12px;
+	align-items: end;
+}
+
+.ib-check {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.ib-check input {
+	width: auto;
+}
+
+.ib-actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.ib-actions form {
+	display: inline-flex;
+	margin: 0;
+}
+
+.ib-pill {
+	display: inline-block;
+	min-width: 86px;
+	border-radius: 999px;
+	padding: 3px 9px;
+	text-align: center;
+	font-size: .82rem;
+	font-weight: 700;
+}
+
+.ib-status-draft {
+	background: #e9eef3;
+	color: #39424e;
+}
+
+.ib-status-submitted {
+	background: #fff4cc;
+	color: #715100;
+}
+
+.ib-status-approved,
+.ib-status-paid {
+	background: #dff7e7;
+	color: #116329;
+}
+
+.ib-status-refused,
+.ib-status-cancelled {
+	background: #fde4e1;
+	color: #9f1c13;
+}
+
+.ib-status-sent {
+	background: #dff1ff;
+	color: #064c7a;
+}
+
+.ib-invoice table tfoot th,
+.ib-invoice table tfoot td {
+	font-weight: 700;
+}
+
+@media (max-width: 1000px) {
+	.ib-grid-2,
+	.ib-grid-3,
+	.ib-columns,
+	.ib-form-grid,
+	.ib-filters {
+		grid-template-columns: 1fr;
+	}
+
+	.ib-band {
+		align-items: stretch;
+		flex-direction: column;
+	}
+}
