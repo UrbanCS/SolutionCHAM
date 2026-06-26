@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
-	<layout title="COM_INSTRUCTOR_BILLING_MENU_SESSION">
-		<message>COM_INSTRUCTOR_BILLING_MENU_SESSION_DESC</message>
+	<layout title="Ajouter un cours">
+		<message>Formulaire frontend permettant à un instructeur d'ajouter manuellement un cours oublié.</message>
 	</layout>
 </metadata>

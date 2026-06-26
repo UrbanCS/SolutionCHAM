@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
-	<layout title="COM_INSTRUCTOR_BILLING_MENU_SESSIONS">
-		<message>COM_INSTRUCTOR_BILLING_MENU_SESSIONS_DESC</message>
+	<layout title="Historique des cours instructeur">
+		<message>Liste frontend des cours et trajets de l'instructeur connecté.</message>
 	</layout>
 </metadata>
