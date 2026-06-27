@@ -3,6 +3,7 @@
 defined('_JEXEC') or die;
 
 use Cham\Component\InstructorBilling\Administrator\Service\MoneyService;
+use Cham\Component\InstructorBilling\Administrator\Service\AccessService;
 use Cham\Component\InstructorBilling\Site\Service\SharedServices;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Uri\Uri;
@@ -15,6 +16,8 @@ $currentPath = Uri::getInstance()->getPath() ?: '/index.php';
 $componentUrl = static function (array $query) use ($currentPath): string {
 	return $currentPath . '?' . http_build_query(array_merge(['option' => 'com_instructor_billing'], $query));
 };
+$returnUrl = base64_encode(Uri::getInstance()->toString());
+$canSyncSage = AccessService::canInvoice();
 ?>
 
 <div class="ib-site">
@@ -27,8 +30,28 @@ $componentUrl = static function (array $query) use ($currentPath): string {
 			<div class="ib-row-actions">
 				<a href="<?php echo htmlspecialchars($componentUrl(['task' => 'invoice.csv', 'id' => (int) $invoice->id, 'format' => 'raw'])); ?>">CSV</a>
 				<a target="_blank" href="<?php echo htmlspecialchars($componentUrl(['view' => 'invoice', 'id' => (int) $invoice->id, 'layout' => 'print', 'tmpl' => 'component'])); ?>">Imprimer</a>
+				<?php if ($canSyncSage) : ?>
+					<form method="post" action="<?php echo htmlspecialchars($componentUrl(['task' => 'invoice.syncSage', 'id' => (int) $invoice->id])); ?>">
+						<input type="hidden" name="option" value="com_instructor_billing">
+						<input type="hidden" name="task" value="invoice.syncSage">
+						<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
+						<button class="ib-mini" type="submit" <?php echo $invoice->sage_sync_status === 'synced' ? 'disabled' : ''; ?>>Envoyer à Sage</button>
+						<?php echo HTMLHelper::_('form.token'); ?>
+					</form>
+				<?php endif; ?>
 			</div>
 		</div>
+		<?php if (!empty($invoice->sage_sync_status)) : ?>
+			<p class="ib-gps-note">
+				Sage: <?php echo $invoice->sage_sync_status === 'synced' ? 'synchronisée' : 'erreur'; ?>
+				<?php if (!empty($invoice->sage_invoice_id)) : ?>
+					· ID <?php echo htmlspecialchars($invoice->sage_invoice_id); ?>
+				<?php endif; ?>
+				<?php if ($invoice->sage_sync_status === 'failed' && !empty($invoice->sage_sync_error)) : ?>
+					· <?php echo htmlspecialchars($invoice->sage_sync_error); ?>
+				<?php endif; ?>
+			</p>
+		<?php endif; ?>
 		<table class="ib-table">
 			<thead><tr><th>Description</th><th>Heures</th><th>Total</th></tr></thead>
 			<tbody>

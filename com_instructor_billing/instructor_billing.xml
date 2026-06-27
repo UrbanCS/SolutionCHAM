@@ -7,7 +7,7 @@
 	<license>GPL-2.0-or-later</license>
 	<authorEmail>admin@example.com</authorEmail>
 	<authorUrl>https://ecole-de-conduite.ca/</authorUrl>
-	<version>0.2.3</version>
+	<version>0.3.0</version>
 	<description>COM_INSTRUCTOR_BILLING_XML_DESCRIPTION</description>
 	<namespace path="src">Cham\Component\InstructorBilling</namespace>
 	<scriptfile>script.php</scriptfile>

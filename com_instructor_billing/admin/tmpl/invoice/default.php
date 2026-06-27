@@ -22,8 +22,23 @@ $statusLabels = ['draft' => 'Brouillon', 'sent' => 'Envoyée', 'paid' => 'Payée
 		<div class="ib-actions">
 			<a class="btn btn-secondary" href="<?php echo Route::_('index.php?option=com_instructor_billing&task=invoice.csv&id=' . (int) $invoice->id); ?>">CSV</a>
 			<a class="btn btn-primary" target="_blank" href="<?php echo Route::_('index.php?option=com_instructor_billing&view=invoice&id=' . (int) $invoice->id . '&layout=print&tmpl=component'); ?>">PDF / imprimer</a>
+			<form method="post" action="<?php echo Route::_('index.php?option=com_instructor_billing&task=sage.syncInvoice&id=' . (int) $invoice->id); ?>">
+				<button class="btn btn-success" type="submit" <?php echo $invoice->sage_sync_status === 'synced' ? 'disabled' : ''; ?>>Envoyer à Sage</button>
+				<?php echo HTMLHelper::_('form.token'); ?>
+			</form>
 		</div>
 	</div>
+	<?php if (!empty($invoice->sage_sync_status)) : ?>
+		<div class="alert <?php echo $invoice->sage_sync_status === 'synced' ? 'alert-success' : 'alert-warning'; ?>">
+			Sage: <?php echo $invoice->sage_sync_status === 'synced' ? 'synchronisée' : 'erreur'; ?>
+			<?php if (!empty($invoice->sage_invoice_id)) : ?>
+				· ID <?php echo htmlspecialchars($invoice->sage_invoice_id); ?>
+			<?php endif; ?>
+			<?php if ($invoice->sage_sync_status === 'failed' && !empty($invoice->sage_sync_error)) : ?>
+				· <?php echo htmlspecialchars($invoice->sage_sync_error); ?>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
 
 	<form class="ib-actions" method="post" action="<?php echo Route::_('index.php?option=com_instructor_billing&task=invoice.updateStatus&id=' . (int) $invoice->id); ?>">
 		<select name="status">

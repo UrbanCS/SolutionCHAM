@@ -181,7 +181,7 @@ $invoiceStatuses = ['draft' => 'Brouillon', 'sent' => 'Envoyée', 'paid' => 'Pay
 					<div>
 						<strong><?php echo htmlspecialchars($invoice->invoice_number); ?></strong>
 						<span><?php echo htmlspecialchars($invoice->instructor_name); ?> · <?php echo htmlspecialchars($invoice->period_start . ' au ' . $invoice->period_end); ?></span>
-						<small>Total: <?php echo MoneyService::format($invoice->total); ?></small>
+						<small>Total: <?php echo MoneyService::format($invoice->total); ?> · Sage: <?php echo $invoice->sage_sync_status === 'synced' ? 'synchronisée' : ($invoice->sage_sync_status === 'failed' ? 'erreur' : 'non envoyée'); ?></small>
 					</div>
 					<div class="ib-row-actions">
 						<form class="ib-status-form" method="post" action="<?php echo htmlspecialchars($url('management', ['task' => 'management.updateInvoiceStatus', 'id' => (int) $invoice->id])); ?>">
@@ -194,6 +194,13 @@ $invoiceStatuses = ['draft' => 'Brouillon', 'sent' => 'Envoyée', 'paid' => 'Pay
 							</select>
 							<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
 							<button class="ib-mini" type="submit">OK</button>
+							<?php echo HTMLHelper::_('form.token'); ?>
+						</form>
+						<form method="post" action="<?php echo htmlspecialchars($url('invoice', ['task' => 'invoice.syncSage', 'id' => (int) $invoice->id])); ?>">
+							<input type="hidden" name="option" value="com_instructor_billing">
+							<input type="hidden" name="task" value="invoice.syncSage">
+							<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
+							<button class="ib-mini" type="submit" <?php echo $invoice->sage_sync_status === 'synced' ? 'disabled' : ''; ?>>Sage</button>
 							<?php echo HTMLHelper::_('form.token'); ?>
 						</form>
 						<a href="<?php echo htmlspecialchars($url('invoice', ['id' => (int) $invoice->id])); ?>">Voir</a>

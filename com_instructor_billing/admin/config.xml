@@ -29,5 +29,17 @@
 		<field name="sage_client_id" type="text" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_CLIENT_ID" />
 		<field name="sage_client_secret" type="password" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_CLIENT_SECRET" />
 		<field name="sage_redirect_uri" type="url" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_REDIRECT_URI" />
+		<field name="sage_scope" type="text" default="full_access" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_SCOPE" />
+		<field name="sage_api_base" type="url" default="https://api.accounting.sage.com/v3.1" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_API_BASE" />
+		<field name="sage_business_id" type="text" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_BUSINESS_ID" description="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_BUSINESS_ID_DESC" />
+		<field name="sage_document_type" type="list" default="purchase_invoice" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_DOCUMENT_TYPE">
+			<option value="purchase_invoice">COM_INSTRUCTOR_BILLING_CONFIG_SAGE_DOCUMENT_PURCHASE</option>
+			<option value="sales_invoice">COM_INSTRUCTOR_BILLING_CONFIG_SAGE_DOCUMENT_SALES</option>
+		</field>
+		<field name="sage_contact_type" type="text" default="VENDOR" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_CONTACT_TYPE" description="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_CONTACT_TYPE_DESC" />
+		<field name="sage_default_contact_id" type="text" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_DEFAULT_CONTACT_ID" description="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_DEFAULT_CONTACT_ID_DESC" />
+		<field name="sage_ledger_account_id" type="text" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_LEDGER_ACCOUNT_ID" description="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_LEDGER_ACCOUNT_ID_DESC" />
+		<field name="sage_tax_rate_id" type="text" default="" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_TAX_RATE_ID" description="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_TAX_RATE_ID_DESC" />
+		<field name="sage_due_days" type="number" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_DUE_DAYS" min="0" step="1" />
 	</fieldset>
 </config>

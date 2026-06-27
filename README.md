@@ -55,7 +55,7 @@ docs/
    - préfixe de facture, par exemple `CHAM`
    - taux horaire par défaut
    - taxes si applicables
-   - paramètres Sage si vous préparez une intégration future
+   - paramètres Sage si vous activez l'intégration comptable
 
 4. Dans `Utilisateurs` -> `Groupes`, vérifier ou créer le groupe `Instructeur`.
 
@@ -103,13 +103,27 @@ docs/
 
 ## Sage
 
-Le composant inclut `admin/src/Service/SageService.php` avec les méthodes préparées:
+Le composant inclut une intégration Sage Business Cloud Accounting via OAuth2:
 
-- `createInvoice($invoiceId)`
-- `syncCustomer($instructorId)`
-- `testConnection()`
+- connexion OAuth2 depuis `Composants` -> `Facturation instructeurs` -> `Sage`
+- création d'un contact Sage par instructeur, ou utilisation d'un contact Sage par défaut
+- envoi d'une facture Joomla vers Sage
+- stockage de l'ID Sage retourné pour éviter les doublons
+- statut de synchronisation sur les factures
 
-L'intégration réelle Sage Business Cloud doit être ajoutée plus tard avec OAuth2, sans hardcoder de secret dans le code.
+Paramètres à fournir dans les options du composant:
+
+- `Client ID Sage`
+- `Secret client Sage`
+- `URI de redirection OAuth2`
+- `Business ID Sage` si requis par le compte Sage
+- `Compte de grand livre Sage`
+- `Taux de taxe Sage` si applicable
+- type de document: facture fournisseur/achat ou facture de vente
+
+Par défaut, l'intégration crée une facture fournisseur/achat, car la solution calcule les montants à payer aux instructeurs. Le mode facture de vente reste disponible par configuration.
+
+Aucune clé Sage ou API n'est codée dans les fichiers. Les jetons OAuth2 sont stockés côté base de données Joomla.
 
 ## Tests manuels recommandés
 
@@ -128,3 +142,4 @@ Checklist courte:
 - générer une facture hebdomadaire
 - exporter CSV
 - ouvrir `PDF / imprimer`
+- configurer Sage, connecter OAuth2, puis tester `Envoyer à Sage` sur une facture

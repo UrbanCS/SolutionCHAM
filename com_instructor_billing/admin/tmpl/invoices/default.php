@@ -77,7 +77,7 @@ $statusLabels = ['draft' => 'Brouillon', 'sent' => 'Envoyée', 'paid' => 'Payée
 	</form>
 
 	<table class="table table-striped">
-		<thead><tr><th>No</th><th>Instructeur</th><th>Période</th><th>Total</th><th>Statut</th><th></th></tr></thead>
+		<thead><tr><th>No</th><th>Instructeur</th><th>Période</th><th>Total</th><th>Statut</th><th>Sage</th><th></th></tr></thead>
 		<tbody>
 		<?php foreach ($this->items as $invoice) : ?>
 			<tr>
@@ -86,11 +86,20 @@ $statusLabels = ['draft' => 'Brouillon', 'sent' => 'Envoyée', 'paid' => 'Payée
 				<td><?php echo htmlspecialchars($invoice->period_start . ' au ' . $invoice->period_end); ?></td>
 				<td><?php echo MoneyService::format($invoice->total); ?></td>
 				<td><span class="ib-pill ib-status-<?php echo htmlspecialchars($invoice->status); ?>"><?php echo $statusLabels[$invoice->status] ?? $invoice->status; ?></span></td>
+				<td>
+					<?php if ($invoice->sage_sync_status === 'synced') : ?>
+						<span class="ib-pill ib-status-approved">Synchronisée</span>
+					<?php elseif ($invoice->sage_sync_status === 'failed') : ?>
+						<span class="ib-pill ib-status-refused">Erreur</span>
+					<?php else : ?>
+						<span class="ib-pill ib-status-draft">Non envoyée</span>
+					<?php endif; ?>
+				</td>
 				<td><a class="btn btn-sm btn-outline-primary" href="<?php echo Route::_('index.php?option=com_instructor_billing&view=invoice&id=' . (int) $invoice->id); ?>">Ouvrir</a></td>
 			</tr>
 		<?php endforeach; ?>
 		<?php if (!$this->items) : ?>
-			<tr><td colspan="6">Aucune facture.</td></tr>
+			<tr><td colspan="7">Aucune facture.</td></tr>
 		<?php endif; ?>
 		</tbody>
 	</table>

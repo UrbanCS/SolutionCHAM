@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `#__instructor_profiles` (
   `user_id` int unsigned NOT NULL,
   `hourly_rate` decimal(10,2) NOT NULL DEFAULT 0.00,
   `phone` varchar(40) NULL DEFAULT NULL,
+  `sage_contact_id` varchar(80) NULL DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -55,6 +56,11 @@ CREATE TABLE IF NOT EXISTS `#__invoices` (
   `tax_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
   `total` decimal(10,2) NOT NULL DEFAULT 0.00,
   `status` varchar(20) NOT NULL DEFAULT 'draft',
+  `sage_invoice_id` varchar(80) NULL DEFAULT NULL,
+  `sage_invoice_number` varchar(80) NULL DEFAULT NULL,
+  `sage_synced_at` datetime NULL DEFAULT NULL,
+  `sage_sync_status` varchar(30) NULL DEFAULT NULL,
+  `sage_sync_error` text NULL DEFAULT NULL,
   `created_by` int unsigned NULL DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -62,7 +68,8 @@ CREATE TABLE IF NOT EXISTS `#__invoices` (
   UNIQUE KEY `idx_invoices_invoice_number` (`invoice_number`),
   KEY `idx_invoices_instructor` (`instructor_user_id`),
   KEY `idx_invoices_period` (`period_start`, `period_end`),
-  KEY `idx_invoices_status` (`status`)
+  KEY `idx_invoices_status` (`status`),
+  KEY `idx_invoices_sage_status` (`sage_sync_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `#__invoice_items` (

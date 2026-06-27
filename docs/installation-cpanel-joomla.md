@@ -90,6 +90,33 @@ Dans les options du composant:
 - `Taxes`: activer seulement si nécessaire
 - `Taux de taxe`: entrer `0.13` ou `13` pour 13 %
 
+## Configuration Sage
+
+Dans Sage Developer / Sage Business Cloud Accounting:
+
+1. Créer une application OAuth2.
+2. Copier le `Client ID` et le `Client Secret`.
+3. Dans Joomla, ouvrir `Composants` -> `Facturation instructeurs` -> `Sage`.
+4. Copier l'URI affichée dans le champ Redirect URI de l'application Sage.
+5. Dans les options du composant Joomla, configurer:
+   - `Activer Sage`: Oui
+   - `Client ID Sage`
+   - `Secret client Sage`
+   - `URI de redirection OAuth2`
+   - `Compte de grand livre Sage`
+   - `Business ID Sage` si Sage retourne plusieurs entreprises ou l'exige
+   - `Taux de taxe Sage` si applicable
+   - type de document: facture fournisseur/achat ou facture de vente
+6. Retourner à `Composants` -> `Facturation instructeurs` -> `Sage`.
+7. Cliquer `Connecter Sage` et accepter l'accès.
+8. Ouvrir une facture et cliquer `Envoyer à Sage`.
+
+Notes:
+
+- Par défaut, le composant crée une facture fournisseur/achat, car les factures représentent les montants à payer aux instructeurs.
+- Si le compte Sage refuse le document avec une erreur de compte, taxe ou contact, corriger les IDs dans les options du composant puis relancer `Envoyer à Sage`.
+- Le CSV et la vue imprimable restent disponibles même si Sage n'est pas connecté.
+
 ## Vérification fonctionnelle
 
 1. Se connecter comme instructeur.
@@ -104,6 +131,7 @@ Dans les options du composant:
 10. Tester `CSV`.
 11. Tester `PDF / imprimer`.
 12. Se connecter comme administrateur et vérifier que la facture est visible dans la gestion.
+13. Si Sage est configuré, tester `Envoyer à Sage` sur une facture.
 
 ## Vérification d'isolation
 
@@ -124,4 +152,4 @@ Créer un cours avec chaque compte. Confirmer que:
 - Le GPS enregistre la position de départ et de fin si le navigateur l'autorise.
 - La table `#__gps_points` existe déjà pour ajouter plus tard des points intermédiaires pendant le trajet.
 - L'export PDF est une vue imprimable compatible cPanel sans librairie externe.
-- Sage est préparé par service PHP et configuration, mais l'API réelle n'est pas activée dans ce MVP.
+- Sage est intégré via OAuth2, mais nécessite les IDs comptables propres au compte Sage du client avant synchronisation réelle.

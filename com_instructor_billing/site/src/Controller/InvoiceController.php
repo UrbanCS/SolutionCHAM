@@ -54,6 +54,19 @@ class InvoiceController extends BaseController
 		$app->close();
 	}
 
+	public function syncSage(): void
+	{
+		SharedServices::load();
+		AccessService::denyUnless(AccessService::canInvoice());
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+		$app = Factory::getApplication();
+		$id = $app->input->getInt('id');
+		(new \Cham\Component\InstructorBilling\Administrator\Service\SageService())->createInvoice($id);
+		$app->enqueueMessage(Text::_('COM_INSTRUCTOR_BILLING_SAGE_INVOICE_SYNCED'));
+		$this->redirectBack('index.php?option=com_instructor_billing&view=invoice&id=' . $id);
+	}
+
 	private function redirectBack(string $fallback): void
 	{
 		$app = Factory::getApplication();
