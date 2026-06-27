@@ -2,13 +2,27 @@
 
 defined('_JEXEC') or die;
 
+use Cham\Component\InstructorBilling\Administrator\Service\DateService;
+use Cham\Component\InstructorBilling\Administrator\Service\AccessService;
+use Cham\Component\InstructorBilling\Site\Service\SharedServices;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 
+SharedServices::load();
 HTMLHelper::_('stylesheet', 'com_instructor_billing/site.css', ['version' => 'auto', 'relative' => true]);
 HTMLHelper::_('script', 'com_instructor_billing/tracker.js', ['version' => 'auto', 'relative' => true], ['defer' => true]);
 
 $summary = $this->weeklySummary;
+$currentPath = Uri::getInstance()->getPath();
+$componentUrl = static function (string $view, array $extra = []) use ($currentPath): string {
+	return $currentPath . '?' . http_build_query(array_merge(['option' => 'com_instructor_billing', 'view' => $view], $extra));
+};
+$componentTaskUrl = static function (string $task, array $extra = []) use ($currentPath): string {
+	return $currentPath . '?' . http_build_query(array_merge(['option' => 'com_instructor_billing', 'task' => $task], $extra));
+};
+$returnUrl = base64_encode(Uri::getInstance()->toString());
+$canManage = AccessService::canApprove() || AccessService::canInvoice();
 $minutesToHours = static fn ($minutes) => number_format(((int) $minutes) / 60, 2, ',', ' ') . ' h';
 $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 'Approuvé', 'refused' => 'Refusé'];
 ?>
@@ -19,6 +33,9 @@ $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 
 			<h1>Mes cours pratiques</h1>
 			<p>Semaine du <?php echo htmlspecialchars($summary->period_start); ?> au <?php echo htmlspecialchars($summary->period_end); ?></p>
 		</div>
+		<?php if ($canManage) : ?>
+			<a class="ib-secondary ib-top-link" href="<?php echo htmlspecialchars($componentUrl('management')); ?>">Gestion admin</a>
+		<?php endif; ?>
 		<div class="ib-hero-total">
 			<strong><?php echo $minutesToHours($summary->total_minutes); ?></strong>
 			<span><?php echo (int) $summary->session_count; ?> cours</span>
@@ -27,8 +44,11 @@ $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 
 
 	<?php if ($this->activeSession) : ?>
 		<form class="ib-panel ib-live" method="post" data-gps-form data-gps-mode="end" action="<?php echo Route::_('index.php?option=com_instructor_billing&task=session.stop'); ?>">
+			<input type="hidden" name="option" value="com_instructor_billing">
+			<input type="hidden" name="task" value="session.stop">
+			<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
 			<h2>Cours en cours</h2>
-			<p>Début: <?php echo htmlspecialchars($this->activeSession->start_time); ?></p>
+			<p>Début: <?php echo htmlspecialchars(DateService::formatLocal($this->activeSession->start_time)); ?></p>
 			<label>Élève/client
 				<input name="student_name" value="<?php echo htmlspecialchars((string) $this->activeSession->student_name); ?>">
 			</label>
@@ -43,6 +63,9 @@ $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 
 		</form>
 	<?php else : ?>
 		<form class="ib-panel" method="post" data-gps-form data-gps-mode="start" action="<?php echo Route::_('index.php?option=com_instructor_billing&task=session.start'); ?>">
+			<input type="hidden" name="option" value="com_instructor_billing">
+			<input type="hidden" name="task" value="session.start">
+			<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
 			<h2>Nouveau cours</h2>
 			<label>Élève/client
 				<input name="student_name" autocomplete="off">
@@ -62,6 +85,9 @@ $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 
 		<div class="ib-panel-head">
 			<h2>Résumé hebdomadaire</h2>
 			<form method="post" action="<?php echo Route::_('index.php?option=com_instructor_billing&task=session.submitWeek'); ?>">
+				<input type="hidden" name="option" value="com_instructor_billing">
+				<input type="hidden" name="task" value="session.submitWeek">
+				<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
 				<button class="ib-secondary" type="submit">Soumettre la semaine</button>
 				<?php echo HTMLHelper::_('form.token'); ?>
 			</form>
@@ -75,10 +101,28 @@ $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 
 
 	<section class="ib-panel">
 		<div class="ib-panel-head">
+			<h2>Facture hebdomadaire</h2>
+		</div>
+		<form class="ib-period" method="post" action="<?php echo Route::_('index.php?option=com_instructor_billing&task=invoice.generateSelf'); ?>">
+			<input type="hidden" name="option" value="com_instructor_billing">
+			<input type="hidden" name="task" value="invoice.generateSelf">
+			<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
+			<label>Début <input type="date" name="period_start" value="<?php echo htmlspecialchars($summary->period_start); ?>"></label>
+			<label>Fin <input type="date" name="period_end" value="<?php echo htmlspecialchars($summary->period_end); ?>"></label>
+			<button class="ib-secondary" type="submit">Générer / approuver ma facture</button>
+			<?php echo HTMLHelper::_('form.token'); ?>
+		</form>
+	</section>
+
+	<section class="ib-panel">
+		<div class="ib-panel-head">
 			<h2>Ajouter manuellement</h2>
-			<a href="<?php echo Route::_('index.php?option=com_instructor_billing&view=session'); ?>">Page complète</a>
+			<a href="<?php echo htmlspecialchars($componentUrl('session')); ?>">Page complète</a>
 		</div>
 		<form class="ib-manual" method="post" data-gps-form data-gps-mode="manual" action="<?php echo Route::_('index.php?option=com_instructor_billing&task=session.saveManual'); ?>">
+			<input type="hidden" name="option" value="com_instructor_billing">
+			<input type="hidden" name="task" value="session.saveManual">
+			<input type="hidden" name="return" value="<?php echo htmlspecialchars($returnUrl); ?>">
 			<label>Élève/client <input name="student_name"></label>
 			<label>Début <input name="start_time" type="datetime-local" required></label>
 			<label>Fin <input name="end_time" type="datetime-local" required></label>
@@ -95,14 +139,14 @@ $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 
 	<section class="ib-panel">
 		<div class="ib-panel-head">
 			<h2>Historique récent</h2>
-			<a href="<?php echo Route::_('index.php?option=com_instructor_billing&view=sessions'); ?>">Tout voir</a>
+			<a href="<?php echo htmlspecialchars($componentUrl('sessions')); ?>">Tout voir</a>
 		</div>
 		<div class="ib-list">
 			<?php foreach ($this->recentSessions as $session) : ?>
 				<div class="ib-row">
 					<div>
 						<strong><?php echo htmlspecialchars((string) $session->student_name ?: 'Cours pratique'); ?></strong>
-						<span><?php echo htmlspecialchars($session->start_time); ?></span>
+						<span><?php echo htmlspecialchars(DateService::formatLocal($session->start_time)); ?></span>
 					</div>
 					<div>
 						<strong><?php echo $minutesToHours($session->duration_minutes); ?></strong>
@@ -127,8 +171,8 @@ $statusLabels = ['draft' => 'Brouillon', 'submitted' => 'Soumis', 'approved' => 
 							<span><?php echo htmlspecialchars($invoice->period_start . ' au ' . $invoice->period_end); ?></span>
 						</div>
 						<div class="ib-row-actions">
-							<a href="<?php echo Route::_('index.php?option=com_instructor_billing&view=invoice&id=' . (int) $invoice->id); ?>">Voir</a>
-							<a href="<?php echo Route::_('index.php?option=com_instructor_billing&task=invoice.csv&id=' . (int) $invoice->id); ?>">CSV</a>
+							<a href="<?php echo htmlspecialchars($componentUrl('invoice', ['id' => (int) $invoice->id])); ?>">Voir</a>
+							<a href="<?php echo htmlspecialchars($componentTaskUrl('invoice.csv', ['id' => (int) $invoice->id, 'format' => 'raw'])); ?>">CSV</a>
 						</div>
 					</div>
 				<?php endforeach; ?>

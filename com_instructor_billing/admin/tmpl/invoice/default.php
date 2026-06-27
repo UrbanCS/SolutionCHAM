@@ -2,6 +2,7 @@
 
 defined('_JEXEC') or die;
 
+use Cham\Component\InstructorBilling\Administrator\Service\DateService;
 use Cham\Component\InstructorBilling\Administrator\Service\MoneyService;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Router\Route;
@@ -52,8 +53,8 @@ $statusLabels = ['draft' => 'Brouillon', 'sent' => 'Envoyée', 'paid' => 'Payée
 							<?php echo htmlspecialchars($item->description); ?>
 						<?php endif; ?>
 					</td>
-					<td><?php echo htmlspecialchars((string) $item->start_time); ?></td>
-					<td><?php echo htmlspecialchars((string) $item->end_time); ?></td>
+					<td><?php echo htmlspecialchars(DateService::formatLocal($item->start_time)); ?></td>
+					<td><?php echo htmlspecialchars(DateService::formatLocal($item->end_time)); ?></td>
 					<td>
 						<?php if ($invoice->status === 'draft') : ?>
 							<input name="quantity_hours[]" type="number" step="0.01" min="0" value="<?php echo htmlspecialchars($item->quantity_hours); ?>">

@@ -177,6 +177,93 @@
 	gap: 12px;
 }
 
+.ib-top-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: auto;
+	text-decoration: none;
+}
+
+.ib-row-wide {
+	align-items: center;
+}
+
+.ib-row-actions form {
+	margin: 0;
+}
+
+.ib-mini {
+	min-height: 36px;
+	border: 0;
+	border-radius: 6px;
+	background: #006d77;
+	color: #ffffff;
+	cursor: pointer;
+	font-weight: 700;
+	padding: 8px 12px;
+}
+
+.ib-mini:disabled {
+	background: #cfd8e3;
+	color: #526070;
+	cursor: not-allowed;
+}
+
+.ib-approve {
+	background: #157f3b;
+}
+
+.ib-refuse {
+	background: #b42318;
+}
+
+.ib-period {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+	gap: 12px;
+	align-items: end;
+	margin-bottom: 14px;
+}
+
+.ib-profile-form,
+.ib-profile-fields {
+	display: grid;
+	grid-template-columns: minmax(180px, 1.4fr) minmax(120px, .7fr) minmax(140px, .8fr) auto auto;
+	gap: 12px;
+	align-items: end;
+	margin-bottom: 14px;
+}
+
+.ib-profile-fields {
+	grid-template-columns: minmax(110px, .7fr) minmax(140px, .9fr) auto auto;
+	margin-bottom: 0;
+}
+
+.ib-checkline {
+	display: flex !important;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+	margin-bottom: 12px;
+}
+
+.ib-checkline input {
+	width: auto;
+	min-height: 0;
+	margin: 0;
+}
+
+.ib-status-form {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.ib-status-form select {
+	min-width: 130px;
+}
+
 .ib-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -213,7 +300,10 @@
 	}
 
 	.ib-stats,
-	.ib-manual {
+	.ib-manual,
+	.ib-period,
+	.ib-profile-form,
+	.ib-profile-fields {
 		grid-template-columns: 1fr;
 	}
 

@@ -2,6 +2,7 @@
 
 defined('_JEXEC') or die;
 
+use Cham\Component\InstructorBilling\Administrator\Service\DateService;
 use Cham\Component\InstructorBilling\Administrator\Service\MoneyService;
 use Joomla\CMS\HTML\HTMLHelper;
 
@@ -27,8 +28,8 @@ $invoice = $this->item;
 		<?php foreach ($this->items as $item) : ?>
 			<tr>
 				<td><?php echo htmlspecialchars($item->description); ?></td>
-				<td><?php echo htmlspecialchars((string) $item->start_time); ?></td>
-				<td><?php echo htmlspecialchars((string) $item->end_time); ?></td>
+				<td><?php echo htmlspecialchars(DateService::formatLocal($item->start_time)); ?></td>
+				<td><?php echo htmlspecialchars(DateService::formatLocal($item->end_time)); ?></td>
 				<td><?php echo htmlspecialchars($item->quantity_hours); ?></td>
 				<td><?php echo MoneyService::format($item->hourly_rate); ?></td>
 				<td><?php echo MoneyService::format($item->line_total); ?></td>

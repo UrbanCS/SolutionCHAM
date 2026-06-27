@@ -19,6 +19,7 @@
 		</field>
 		<field name="tax_rate" type="number" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_TAX_RATE" step="0.001" min="0" />
 		<field name="default_hourly_rate" type="number" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_DEFAULT_RATE" step="0.01" min="0" />
+		<field name="display_timezone" type="text" default="America/Toronto" label="COM_INSTRUCTOR_BILLING_CONFIG_DISPLAY_TIMEZONE" description="COM_INSTRUCTOR_BILLING_CONFIG_DISPLAY_TIMEZONE_DESC" />
 	</fieldset>
 	<fieldset name="sage" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_LABEL">
 		<field name="sage_enabled" type="radio" default="0" label="COM_INSTRUCTOR_BILLING_CONFIG_SAGE_ENABLED" class="switcher">

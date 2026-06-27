@@ -22,6 +22,28 @@ class InvoiceService
 		return $this->createInvoiceFromSessions($instructorUserId, $periodStart, $periodEnd, $sessions, $createdBy);
 	}
 
+	public function generateInstructorWeeklyInvoice(int $instructorUserId, string $periodStart, string $periodEnd): int
+	{
+		$user = AccessService::currentUser();
+		AccessService::denyUnless(AccessService::canAccessInstructor($instructorUserId, $user));
+
+		$sessions = $this->getInstructorBillableSessions($instructorUserId, $periodStart, $periodEnd);
+
+		if (!$sessions) {
+			throw new \RuntimeException('Aucun cours soumis non facturé pour cette période.', 400);
+		}
+
+		return $this->createInvoiceFromSessions(
+			$instructorUserId,
+			$periodStart,
+			$periodEnd,
+			$sessions,
+			(int) $user->id,
+			'sent',
+			(int) $user->id
+		);
+	}
+
 	public function createManualInvoice(array $data, int $createdBy): int
 	{
 		AccessService::denyUnless(AccessService::canInvoice());
@@ -82,7 +104,15 @@ class InvoiceService
 		}
 	}
 
-	public function createInvoiceFromSessions(int $instructorUserId, string $periodStart, string $periodEnd, array $sessions, int $createdBy): int
+	public function createInvoiceFromSessions(
+		int $instructorUserId,
+		string $periodStart,
+		string $periodEnd,
+		array $sessions,
+		int $createdBy,
+		string $status = 'draft',
+		?int $approveSessionsBy = null
+	): int
 	{
 		$hourlyRate = $this->getInstructorRate($instructorUserId);
 		$subtotalCents = 0;
@@ -105,7 +135,7 @@ class InvoiceService
 				'subtotal'           => MoneyService::fromCents($totals['subtotal']),
 				'tax_amount'         => MoneyService::fromCents($totals['tax']),
 				'total'              => MoneyService::fromCents($totals['total']),
-				'status'             => 'draft',
+				'status'             => in_array($status, ['draft', 'sent', 'paid', 'cancelled'], true) ? $status : 'draft',
 				'created_by'         => $createdBy,
 				'created_at'         => $now,
 				'updated_at'         => $now,
@@ -131,6 +161,23 @@ class InvoiceService
 				$db->insertObject('#__invoice_items', $item);
 			}
 
+			if ($approveSessionsBy !== null) {
+				$sessionIds = array_map(static fn ($session) => (int) $session->id, $sessions);
+				$sessionIds = array_filter($sessionIds);
+
+				if ($sessionIds) {
+					$query = $db->getQuery(true)
+						->update($db->quoteName('#__driving_sessions'))
+						->set($db->quoteName('status') . ' = ' . $db->quote('approved'))
+						->set($db->quoteName('approved_by') . ' = ' . (int) $approveSessionsBy)
+						->set($db->quoteName('approved_at') . ' = ' . $db->quote($now))
+						->set($db->quoteName('updated_at') . ' = ' . $db->quote($now))
+						->where($db->quoteName('id') . ' IN (' . implode(',', $sessionIds) . ')')
+						->where($db->quoteName('status') . ' = ' . $db->quote('submitted'));
+					$db->setQuery($query)->execute();
+				}
+			}
+
 			$db->transactionCommit();
 
 			AuditService::log('invoice.generate_weekly', 'invoice', (int) $invoice->id, [
@@ -154,6 +201,26 @@ class InvoiceService
 			->from($db->quoteName('#__driving_sessions', 's'))
 			->where($db->quoteName('s.instructor_user_id') . ' = ' . (int) $instructorUserId)
 			->where($db->quoteName('s.status') . ' = ' . $db->quote('approved'))
+			->where($db->quoteName('s.start_time') . ' >= ' . $db->quote($periodStart . ' 00:00:00'))
+			->where($db->quoteName('s.start_time') . ' <= ' . $db->quote($periodEnd . ' 23:59:59'))
+			->where('NOT EXISTS (
+				SELECT 1 FROM ' . $db->quoteName('#__invoice_items', 'ii') . '
+				WHERE ' . $db->quoteName('ii.session_id') . ' = ' . $db->quoteName('s.id') . '
+			)')
+			->order($db->quoteName('s.start_time') . ' ASC');
+		$db->setQuery($query);
+
+		return $db->loadObjectList() ?: [];
+	}
+
+	public function getInstructorBillableSessions(int $instructorUserId, string $periodStart, string $periodEnd): array
+	{
+		$db = Factory::getDbo();
+		$query = $db->getQuery(true)
+			->select('s.*')
+			->from($db->quoteName('#__driving_sessions', 's'))
+			->where($db->quoteName('s.instructor_user_id') . ' = ' . (int) $instructorUserId)
+			->where($db->quoteName('s.status') . ' IN (' . $db->quote('submitted') . ', ' . $db->quote('approved') . ')')
 			->where($db->quoteName('s.start_time') . ' >= ' . $db->quote($periodStart . ' 00:00:00'))
 			->where($db->quoteName('s.start_time') . ' <= ' . $db->quote($periodEnd . ' 23:59:59'))
 			->where('NOT EXISTS (

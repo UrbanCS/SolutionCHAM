@@ -2,7 +2,7 @@
 
 Ce dépôt contient une première version MVP installable du composant Joomla `com_instructor_billing`.
 
-Le composant permet aux instructeurs de se connecter avec leur compte Joomla, démarrer et terminer un cours pratique, ajouter un cours manuellement, consulter leur historique, et voir leurs factures. Les administrateurs peuvent gérer les profils instructeurs, approuver/refuser les cours, générer des factures hebdomadaires, créer des factures manuelles, exporter en CSV et imprimer une facture proprement.
+Le composant permet aux instructeurs de se connecter avec leur compte Joomla, démarrer et terminer un cours pratique, ajouter un cours manuellement, consulter leur historique, générer/approuver leur facture hebdomadaire, et voir leurs factures. Les administrateurs peuvent gérer les profils instructeurs, suivre les factures, créer des factures manuelles, exporter en CSV et imprimer une facture proprement. Une page frontend de gestion permet aussi aux administrateurs de suivre les cours/factures sans passer par le backend Joomla.
 
 ## Stack
 
@@ -67,6 +67,10 @@ docs/
    - type: `Facturation instructeurs` -> `Tableau de bord instructeur`
    - accès: utilisateurs connectés ou groupe Instructeur
 
+   Optionnel pour les administrateurs:
+   - type: `Facturation instructeurs` -> `Gestion frontend instructeurs`
+   - accès: Administrateurs ou Super Users
+
 7. Dans l'administration du composant:
    - ouvrir `Composants` -> `Facturation instructeurs`
    - créer les profils instructeurs avec leur taux horaire
@@ -80,8 +84,8 @@ docs/
 4. Le navigateur peut demander l'autorisation GPS. Si elle est refusée, le cours est quand même enregistré.
 5. Il clique `Terminer le cours/trajet`.
 6. Le système calcule automatiquement la durée et met le cours au statut `soumis`.
-7. L'administrateur approuve ou refuse le cours.
-8. L'administrateur génère une facture hebdomadaire pour les cours approuvés.
+7. L'instructeur clique `Générer / approuver ma facture` pour la période.
+8. Le système approuve ses cours soumis, génère une facture au statut `envoyée`, puis l'affiche dans son espace.
 9. La facture peut être exportée en CSV ou imprimée en PDF via le navigateur.
 
 ## Sécurité

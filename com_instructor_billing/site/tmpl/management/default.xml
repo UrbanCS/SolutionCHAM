@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Gestion frontend instructeurs">
+		<message>Page frontend réservée aux administrateurs pour approuver les cours et générer les factures.</message>
+	</layout>
+</metadata>

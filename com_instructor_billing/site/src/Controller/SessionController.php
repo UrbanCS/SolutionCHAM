@@ -11,6 +11,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 
 class SessionController extends BaseController
 {
@@ -23,7 +24,7 @@ class SessionController extends BaseController
 		$this->getModel('Session')->start($app->input->post->getArray());
 
 		$app->enqueueMessage(Text::_('COM_INSTRUCTOR_BILLING_SESSION_STARTED'));
-		$this->setRedirect(Route::_('index.php?option=com_instructor_billing&view=dashboard', false));
+		$this->redirectBack('index.php?option=com_instructor_billing&view=dashboard');
 	}
 
 	public function stop(): void
@@ -35,7 +36,7 @@ class SessionController extends BaseController
 		$this->getModel('Session')->stop((int) AccessService::currentUser()->id, $app->input->post->getArray());
 
 		$app->enqueueMessage(Text::_('COM_INSTRUCTOR_BILLING_SESSION_STOPPED'));
-		$this->setRedirect(Route::_('index.php?option=com_instructor_billing&view=dashboard', false));
+		$this->redirectBack('index.php?option=com_instructor_billing&view=dashboard');
 	}
 
 	public function saveManual(): void
@@ -47,7 +48,7 @@ class SessionController extends BaseController
 		$this->getModel('Session')->saveManual($app->input->post->getArray());
 
 		$app->enqueueMessage(Text::_('COM_INSTRUCTOR_BILLING_SESSION_MANUAL_SAVED'));
-		$this->setRedirect(Route::_('index.php?option=com_instructor_billing&view=sessions', false));
+		$this->redirectBack('index.php?option=com_instructor_billing&view=dashboard');
 	}
 
 	public function submitWeek(): void
@@ -59,12 +60,27 @@ class SessionController extends BaseController
 		$count = $this->getModel('Session')->submitWeek((int) AccessService::currentUser()->id);
 
 		$app->enqueueMessage(Text::sprintf('COM_INSTRUCTOR_BILLING_WEEK_SUBMITTED', $count));
-		$this->setRedirect(Route::_('index.php?option=com_instructor_billing&view=dashboard', false));
+		$this->redirectBack('index.php?option=com_instructor_billing&view=dashboard');
 	}
 
 	private function guardInstructor(): void
 	{
 		SharedServices::load();
 		AccessService::denyUnless(AccessService::isInstructor());
+	}
+
+	private function redirectBack(string $fallback): void
+	{
+		$app = Factory::getApplication();
+		$encoded = $app->input->post->getString('return', '');
+		$return = $encoded !== '' ? base64_decode($encoded, true) : false;
+
+		if (is_string($return) && $return !== '' && Uri::isInternal($return)) {
+			$this->setRedirect($return);
+
+			return;
+		}
+
+		$this->setRedirect(Route::_($fallback, false));
 	}
 }

@@ -5,12 +5,16 @@ defined('_JEXEC') or die;
 use Cham\Component\InstructorBilling\Administrator\Service\MoneyService;
 use Cham\Component\InstructorBilling\Site\Service\SharedServices;
 use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 
 SharedServices::load();
 HTMLHelper::_('stylesheet', 'com_instructor_billing/site.css', ['version' => 'auto', 'relative' => true]);
 
 $invoice = $this->item;
+$currentPath = Uri::getInstance()->getPath() ?: '/index.php';
+$componentUrl = static function (array $query) use ($currentPath): string {
+	return $currentPath . '?' . http_build_query(array_merge(['option' => 'com_instructor_billing'], $query));
+};
 ?>
 
 <div class="ib-site">
@@ -21,8 +25,8 @@ $invoice = $this->item;
 				<p><?php echo htmlspecialchars($invoice->period_start . ' au ' . $invoice->period_end); ?></p>
 			</div>
 			<div class="ib-row-actions">
-				<a href="<?php echo Route::_('index.php?option=com_instructor_billing&task=invoice.csv&id=' . (int) $invoice->id); ?>">CSV</a>
-				<a target="_blank" href="<?php echo Route::_('index.php?option=com_instructor_billing&view=invoice&id=' . (int) $invoice->id . '&layout=print&tmpl=component'); ?>">Imprimer</a>
+				<a href="<?php echo htmlspecialchars($componentUrl(['task' => 'invoice.csv', 'id' => (int) $invoice->id, 'format' => 'raw'])); ?>">CSV</a>
+				<a target="_blank" href="<?php echo htmlspecialchars($componentUrl(['view' => 'invoice', 'id' => (int) $invoice->id, 'layout' => 'print', 'tmpl' => 'component'])); ?>">Imprimer</a>
 			</div>
 		</div>
 		<table class="ib-table">

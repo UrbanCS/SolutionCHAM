@@ -2,6 +2,7 @@
 
 defined('_JEXEC') or die;
 
+use Cham\Component\InstructorBilling\Administrator\Service\DateService;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Router\Route;
@@ -46,7 +47,7 @@ $minutesToHours = static fn ($minutes) => number_format(((int) $minutes) / 60, 2
 		<tbody>
 		<?php foreach ($this->items as $item) : ?>
 			<tr>
-				<td><?php echo htmlspecialchars($item->start_time); ?></td>
+				<td><?php echo htmlspecialchars(DateService::formatLocal($item->start_time)); ?></td>
 				<td><?php echo htmlspecialchars($item->instructor_name); ?></td>
 				<td><?php echo htmlspecialchars((string) $item->student_name); ?></td>
 				<td><?php echo $minutesToHours($item->duration_minutes); ?></td>

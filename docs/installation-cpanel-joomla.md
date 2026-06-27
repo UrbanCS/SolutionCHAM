@@ -73,6 +73,12 @@ Créer un élément de menu:
 - Accès: `Registered` ou un niveau d'accès réservé aux instructeurs
 - Alias suggéré: `mes-cours`
 
+Créer aussi un élément de menu administrateur frontend si le client veut éviter le backend Joomla pour les opérations quotidiennes:
+
+- Type: `Facturation instructeurs` -> `Gestion frontend instructeurs`
+- Accès: niveau réservé aux administrateurs
+- Alias suggéré: `gestion-instructeurs`
+
 Le site existant a déjà un lien `Login`, donc les instructeurs peuvent utiliser l'authentification Joomla standard.
 
 ## Configuration de facturation
@@ -92,14 +98,12 @@ Dans les options du composant:
 4. Refuser ou accepter la localisation GPS pour tester les deux chemins.
 5. Terminer le cours.
 6. Vérifier que le cours apparaît comme `Soumis`.
-7. Se connecter comme administrateur.
-8. Ouvrir `Cours et trajets`.
-9. Approuver le cours.
-10. Ouvrir `Factures`.
-11. Générer une facture hebdomadaire pour la bonne période.
-12. Ouvrir la facture.
-13. Tester `CSV`.
-14. Tester `PDF / imprimer`.
+7. Cliquer `Générer / approuver ma facture`.
+8. Vérifier que la facture apparaît dans l'espace instructeur.
+9. Ouvrir la facture.
+10. Tester `CSV`.
+11. Tester `PDF / imprimer`.
+12. Se connecter comme administrateur et vérifier que la facture est visible dans la gestion.
 
 ## Vérification d'isolation
 

@@ -10,7 +10,7 @@ class SharedServices
 	{
 		$base = JPATH_ADMINISTRATOR . '/components/com_instructor_billing/src/Service/';
 
-		foreach (['AccessService', 'MoneyService', 'AuditService', 'InvoiceService', 'ExportService', 'SageService'] as $service) {
+		foreach (['AccessService', 'MoneyService', 'DateService', 'AuditService', 'InvoiceService', 'ExportService', 'SageService'] as $service) {
 			$file = $base . $service . '.php';
 
 			if (is_file($file)) {

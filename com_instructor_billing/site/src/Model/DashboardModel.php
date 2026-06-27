@@ -5,6 +5,7 @@ namespace Cham\Component\InstructorBilling\Site\Model;
 defined('_JEXEC') or die;
 
 use Cham\Component\InstructorBilling\Administrator\Service\AccessService;
+use Cham\Component\InstructorBilling\Administrator\Service\DateService;
 use Cham\Component\InstructorBilling\Site\Service\SharedServices;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
@@ -86,9 +87,6 @@ class DashboardModel extends BaseDatabaseModel
 
 	private function currentWeekBounds(): array
 	{
-		$start = new \DateTimeImmutable('monday this week');
-		$end = $start->modify('+6 days');
-
-		return [$start->format('Y-m-d'), $end->format('Y-m-d')];
+		return DateService::currentWeekBounds();
 	}
 }

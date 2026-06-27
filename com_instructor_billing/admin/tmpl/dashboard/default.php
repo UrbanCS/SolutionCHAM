@@ -2,6 +2,7 @@
 
 defined('_JEXEC') or die;
 
+use Cham\Component\InstructorBilling\Administrator\Service\DateService;
 use Cham\Component\InstructorBilling\Administrator\Service\MoneyService;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Router\Route;
@@ -39,7 +40,7 @@ $minutesToHours = static fn ($minutes) => number_format(((int) $minutes) / 60, 2
 				<?php foreach ($this->pending as $session) : ?>
 					<tr>
 						<td><?php echo htmlspecialchars($session->instructor_name); ?></td>
-						<td><?php echo htmlspecialchars($session->start_time); ?></td>
+						<td><?php echo htmlspecialchars(DateService::formatLocal($session->start_time)); ?></td>
 						<td><?php echo htmlspecialchars((string) $session->student_name); ?></td>
 						<td><?php echo $minutesToHours($session->duration_minutes); ?></td>
 						<td><a class="btn btn-sm btn-outline-primary" href="<?php echo Route::_('index.php?option=com_instructor_billing&view=session&id=' . (int) $session->id); ?>">Ouvrir</a></td>
